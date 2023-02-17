@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <title>IIS Windows</title>
+        <style type="text/css">
+            body {
+                background-color: #222;
+                color: #999;
+                font-family: sans-serif;
+                font-size: 2rem;
+                margin: 0;
+            }
+
+            #container {
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+                width: 1024px;
+            }
+
+            input,
+            button {
+                font-size: 2rem;
+                margin: 0.5rem;
+                display: inline-block;
+            }
+        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    </head>
+    <body>
+        <div id="container">
+            <h1>Log into OR</h1>
+            <input id="un" />
+            <input id="pw" onkeydown="parseKey(event)" />
+
+            <button onClick="logIn(true)">Go</button>
+            <button onClick="logIn(false)">Get URL</button>
+            <div id="log"></div>
+
+            <script type="text/babel">
+                const un = localStorage.getItem("un");
+                const pw = localStorage.getItem("pw");
+                const unEl = document.getElementById("un");
+                const pwEl = document.getElementById("pw");
+
+                if (un) {
+                    unEl.value = un;
+                    pwEl.value = decodeURIComponent(pw);
+                }
+
+                const logIn = (redirect) => {
+                    const un = unEl.value;
+                    const pw = encodeURIComponent(pwEl.value);
+
+                    localStorage.setItem("un", un);
+                    localStorage.setItem("pw", pw);
+                    const url = `${window.location.origin}/postagetools/Default2.aspx?report-user=${un}&report-password=${pw}&IsInStore=1`;
+                    if (redirect) {
+                        window.location.href = url;
+                    }
+                    document.getElementById("log").innerText = `loading ${url}`;
+                };
+
+                const parseKey = (e) => {
+                    if (e.keyCode === 13) {
+                        logIn();
+                    }
+                };
+
+                if (window.location.search) {
+
+                    // 4ec6d95872b7cd5fa3060fc531a8f33d
+
+                    var r = confirm("Press a button!");
+                    if (r == true) {
+                        var params = window.location.search.substring(1,window.location.search.length).split('&');
+                        window.location.href = `https://${params[1].substring(5,params[1].length)}/admin/oauth/authorize?client_id=${'4ec6d95872b7cd5fa3060fc531a8f33d'}&scope=${'read_content, write_content'}&redirect_uri=${'https://cwray-wlt.corp.stamps.com/'}&state=${'3474132539'}`;
+                    } else {
+                        document.getElementById('body').innerHTML(window.location.search);
+                    }
+                }
+
+            </script>
+        </div>
+    </body>
+</html>
